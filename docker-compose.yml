@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  php:
+    image: wodby/php:latest
+    container_name: prog_m6_digipost_php
+    volumes:
+      - './:/var/www/html'
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - './:/var/www/html'
+      - './docker:/etc/nginx/conf.d'
+    depends_on:
+      - php
+      
+  digipost:
+    image: mysql:latest
+    container_name: prog_m6_digipost
+    environment:
+      MYSQL_DATABASE: '${DB_NAME}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD}'
+    ports:
+      - 3356:3306
+    volumes:
+    - ./docker/sql/:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - "8805:80"
+    environment:
+      PMA_HOST: '${DB_HOST}'
+      PMA_USER: '${DB_USERNAME}'
+      PMA_PASSWORD: '${DB_PASSWORD}'
+    depends_on:
+      - digipost
