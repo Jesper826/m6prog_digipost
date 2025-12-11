@@ -3,7 +3,7 @@
  
 $request_url = explode('/',$_SERVER['REQUEST_URI']);
 
-$controllers = ['bericht'];
+$controllers = ['bericht', 'user', 'userhasbericht', 'berichtenbox'];
 foreach($controllers as $i => $page)
 {
     if($request_url[1] == $page)
